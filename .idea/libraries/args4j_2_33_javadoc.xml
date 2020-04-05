@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="args4j-2.33-javadoc">
+    <CLASSES />
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/args4j-2.33-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>
