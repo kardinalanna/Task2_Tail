@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: Tail.Main
+Main-Class: Tail.CommandLineArgument
+Class-Path: args4j-2.33.jar
 
