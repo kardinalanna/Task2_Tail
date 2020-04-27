@@ -1,21 +1,8 @@
 package Tail;
-
 import org.junit.jupiter.api.Test;
-
 import java.io.*;
-import java.util.ArrayList;
 
 class CutTailTest {
-
-
-    private boolean assertArrayEquals(ArrayList<String> expected, String[] actual) {
-        if (expected.size() == actual.length) {
-            for (int i = 0; i < actual.length; i++) {
-                if (!expected.get(i).equals(actual[i])) throw new AssertionError();
-            }
-        } else throw new AssertionError();
-        return true;
-    }
 
     private void assertFileEquals(File expected, File actual) throws IOException {
         try (BufferedReader reader1 = new BufferedReader(new FileReader(expected));
@@ -37,19 +24,18 @@ class CutTailTest {
         return file;
     }
 
-    @Test
+@Test
     void cut() throws IOException {
-        CutTail object = new CutTail(new File[]{new File("text.txt")}, new File("out.txt"), 5, 0);
-        ArrayList<String> a = new ArrayList<String>();
-        File thisFile = writeFile("test.txt", " Но если он всегда смотрит в лицо смерти, он не будет привязан к вещам и не проявит неуемности и жадности, станет, как я говорил прежде, прекрасным человеком. Что касается размышления о смерти, то Ёсида Кэнко в \"Цурэдзурэ-гуса\"\n" +
+        Cutter object = new Cutter(new File[]{new File("src/main/resources/text.txt")}, new File("src\\main\\resources\\out.txt"), 5, 0);
+        File thisFile = writeFile("src\\test\\resources\\test.txt", " Но если он всегда смотрит в лицо смерти, он не будет привязан к вещам и не проявит неуемности и жадности, станет, как я говорил прежде, прекрасным человеком. Что касается размышления о смерти, то Ёсида Кэнко в \"Цурэдзурэ-гуса\"\n" +
                 " говорит, что монах Синкай имел обыкновение сидеть днями напролет, размышляя о своем конце; несомненно, это очень удобный Для отшельника, но не для воина.\n" +
                 "      Ведь тогда он должен был бы пренебречь своим военным долгом и отказаться от пути верности и сыновней почтительности. Самурай же, наоборот, должен постоянно быть занят и общественным, и личным. Но когда бы у него не\n" +
                 " появлялось немного времени для себя, чтобы побыть в безмолвии, он не должен забывать возвращаться к вопросу о смерти и размышлять о ней. Разве не сказано, что Кусуноки Масасигэ увещевал своего сына Масацуру всегда помнить о смерти?\n" +
                 " Все это предназначено для обучения юного самурая.\n");
         assertFileEquals(thisFile, object.returnFile(true));
 
-        CutTail object1 = new CutTail(new File[]{new File("text.txt"), new File("tyt.txt")}, new File("out.txt"), 5, 0);
-        assertFileEquals(writeFile("test.txt", "text.txt\n" + " Но если он всегда смотрит в лицо смерти, он не будет привязан к вещам и не проявит неуемности и жадности, станет, как я говорил прежде, прекрасным человеком. Что касается размышления о смерти, то Ёсида Кэнко в \"Цурэдзурэ-гуса\"\n" +
+        Cutter object1 = new Cutter(new File[]{new File("src\\main\\resources\\text.txt"), new File("src\\main\\resources\\tyt.txt")}, new File("src\\main\\resources\\out.txt"), 5, 0);
+        assertFileEquals(writeFile("src\\test\\resources\\test.txt", "text.txt\n" + " Но если он всегда смотрит в лицо смерти, он не будет привязан к вещам и не проявит неуемности и жадности, станет, как я говорил прежде, прекрасным человеком. Что касается размышления о смерти, то Ёсида Кэнко в \"Цурэдзурэ-гуса\"\n" +
                 " говорит, что монах Синкай имел обыкновение сидеть днями напролет, размышляя о своем конце; несомненно, это очень удобный Для отшельника, но не для воина.\n" +
                 "      Ведь тогда он должен был бы пренебречь своим военным долгом и отказаться от пути верности и сыновней почтительности. Самурай же, наоборот, должен постоянно быть занят и общественным, и личным. Но когда бы у него не\n" +
                 " появлялось немного времени для себя, чтобы побыть в безмолвии, он не должен забывать возвращаться к вопросу о смерти и размышлять о ней. Разве не сказано, что Кусуноки Масасигэ увещевал своего сына Масацуру всегда помнить о смерти?\n" +
@@ -59,7 +45,37 @@ class CutTailTest {
                 "выстрелом на мосту, то ведь, в сущности, было бы еще сомнительно, дурак ли, или только озорник. Но застрелился на мосту — кто же стреляется на мосту? \n" +
                 "как же это на мосту? зачем на мосту? глупо на мосту! — и потому, несомненно, дурак.\n"), object1.returnFile(true));
 
-        CutTail object2 = new CutTail(new File[]{new File("tyt.txt")}, new File("out.txt"), 0, 33);
-        assertFileEquals(writeFile("test.txt", "у! — и потому, несомненно, дурак."), object2.returnFile(true));
+        Cutter object2 = new Cutter(new File[]{new File("src\\main\\resources\\tyt.txt")}, new File("src\\main\\resources\\out.txt"), 0, 33);
+        assertFileEquals(writeFile("src/test/resources/test.txt", "у! — и потому, несомненно, дурак."), object2.returnFile(true));
+
+        //количество отрезаемых сиволов = кол-ву символов в файле
+        Cutter object3 = new Cutter(new File[]{new File("src/main/resources/dir.txt")}, new File("src\\main\\resources\\out.txt"), 0, 4);
+        assertFileEquals(writeFile("src/test/resources/test.txt", "нана"), object3.returnFile(true));
+
+        //кол-во отрезаемых строк = кол-ву строк в файле
+        Cutter object31 = new Cutter(new File[]{new File("src/main/resources/fulllLne.txt")}, new File("src\\main\\resources\\out.txt"), 3, 0);
+        assertFileEquals(writeFile("src/test/resources/test.txt", "Город стреляет в ночь дробью огней\n" +
+                "но ночь сильней\n" +
+                "ее власть велика"), object31.returnFile(true));
+
+        //количество отрезаемых строк > кол-ва строк в файле
+        Cutter object4 = new Cutter(new File[]{new File("src\\main\\resources\\tyt.txt")}, new File("src\\main\\resources\\out.txt"), 100, 0);
+        assertFileEquals(writeFile("src/test/resources/test.txt", "Но большинство, как всегда, когда рассуждает благоразумно, оказалось консервативно и защищало старое: «Какое подурачился — пустил себе пулю в лоб, да и\n" +
+                " все тут». Прогрессисты были побеждены. Но победившая партия, как всегда, разделилась тотчас после победы. Застрелился, так; но отчего? «Пьяный», — было\n" +
+                " мнение одних консерваторов; «промотался», — утверждали другие консерваторы. «Просто дурак», — сказал кто-то. На этом «просто дурак» сошлись все, даже и\n" +
+                " те, которые отвергали, что он застрелился. Действительно, пьяный ли, промотавшийся ли застрелился, или озорник, вовсе не застрелился, а только выкинул \n" +
+                "штуку, — все равно, глупая, дурацкая штука.\n" +
+                "\n" +
+                "На этом остановилось дело на мосту ночью. Поутру, в гостинице у Московской железной дороги, обнаружилось, что дурак не подурачился, а застрелился. Но \n" +
+                "остался в результате истории элемент, с которым были согласны и побежденные, именно, что если и не пошалил, а застрелился, то все-таки дурак. Этот \n" +
+                "удовлетворительный для всех результат особенно прочен был именно потому, что восторжествовали консерваторы: в самом деле, если бы только пошалил \n" +
+                "выстрелом на мосту, то ведь, в сущности, было бы еще сомнительно, дурак ли, или только озорник. Но застрелился на мосту — кто же стреляется на мосту? \n" +
+                "как же это на мосту? зачем на мосту? глупо на мосту! — и потому, несомненно, дурак."), object4.returnFile(true));
+
+        //количество отрезаемых символов > кол-ва символов в файле
+        Cutter object41 = new Cutter(new File[]{new File("src/main/resources/fulllLne.txt")}, new File("src\\main\\resources\\out.txt"), 0, 100);
+        assertFileEquals(writeFile("src/test/resources/test.txt", "Город стреляет в ночь дробью огней\n" +
+                "но ночь сильней\n" +
+                "ее власть велика"), object41.returnFile(true));
     }
 }

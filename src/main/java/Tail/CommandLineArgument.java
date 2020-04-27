@@ -40,15 +40,17 @@ public class CommandLineArgument {
             return;
         }
         try {
+            if (countOfLiens < 0 || countOfSymbols < 0) { //в случае отрицательных згпачений -n или -с
+                System.out.println("Количество отрезаемых строк или символов не может быть отрицательным");
+                return;
+            }
             boolean outExist = false;
             if (outName != null) outExist = true;
             if (countOfLiens == 0 && countOfSymbols == 0) countOfLiens = 10;
-            CutTail tail = new CutTail(inName, outName, countOfLiens, countOfSymbols);
+            Cutter tail = new Cutter(inName, outName, countOfLiens, countOfSymbols);
             if (tail.returnFile(outExist) != null) System.out.println(tail.returnFile(outExist));
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
     }
-
-
 }

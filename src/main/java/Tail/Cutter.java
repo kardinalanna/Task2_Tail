@@ -3,13 +3,13 @@ package Tail;
 import java.io.*;
 import java.util.Scanner;
 
-public class CutTail {
-    private File[] inputName;
-    private File outputName;
-    private int countOfSymbols;
-    private int countOfLines;
+class Cutter {
+    protected File[] inputName;
+    protected File outputName;
+    protected int countOfSymbols;
+    protected int countOfLines;
 
-    CutTail(File[] inName, File outName, int countOfLines, int countOfSymbols) {
+    Cutter(File[] inName, File outName, int countOfLines, int countOfSymbols) {
         this.inputName = inName;
         this.outputName = outName;
         this.countOfSymbols = countOfSymbols;
@@ -18,7 +18,7 @@ public class CutTail {
 
     private void enterFromConsole() throws IOException {
         inputName = new File[]{new File("in.txt")}; //если inputName не был задан, то считываем стоки/строчки из комондной строки
-        System.out.println("Ведите данные. Чтобы заканчить ввод, введите пустую строку.");
+        System.out.println("Ведите данные. Чтобы закончить ввод, введите пустую строку.");
         try (Scanner scan = new Scanner(System.in);
              FileWriter writer = new FileWriter(inputName[0])) {
             while (true) {
@@ -52,6 +52,8 @@ public class CutTail {
                     }
                     allOutFile[y] = miniOutFile.toString();
                 } else if (countOfSymbols != 0) {
+                    if (countOfSymbols > sizeOfAllSymbols)
+                        countOfSymbols = sizeOfAllSymbols; // отрезаемое кол-во символов > кол-ва в файле
                     int nowLengths = 0;       // отрезаем нужное кол-во символов, накапливая их в StringBuilder, потом кладем их в ячейку масссива
                     int thisLineLengths;  // ( итого: массив входнах файлов соответствует массиву, в котором лежит содержимое будущих выходных файлов)
                     String thisLine;
@@ -77,30 +79,26 @@ public class CutTail {
         return allOutFile;
     }
 
-
-    public File returnFile(boolean outExist) throws IOException {   //выводи одни файл, содержащий отркзанные части
+    File returnFile(boolean outExist) throws IOException {   //выводи одни файл, содержащий отркзанные части
         String[] array = cut(countOfLines, countOfSymbols);
-        try {
-            return write(array);
-        } catch (NullPointerException e) {
-            for (int i = 0; i < array.length; i++) {
-                if (array.length > 1) System.out.println(inputName[i].getName() + System.lineSeparator() + array[i]);
-                else System.out.println(array[i]);
-            }
+        if (!outExist) {
+            if (array.length > 1) {
+                for (int i = 0; i < array.length; i++)
+                    System.out.println(inputName[i].getName() + System.lineSeparator() + array[i]);
+            } else
+                for (String s : array) System.out.println(s);
+            return null;
         }
-        return outputName;
+        return write(array);
     }
 
     private File write(String[] array) throws IOException {
-        FileWriter writer = new FileWriter(outputName);
-        for (int i = 0; i < array.length; i++) {
+        try (FileWriter writer = new FileWriter(outputName);) {
             if (array.length > 1) {
-                writer.write(inputName[i].getName() + System.lineSeparator() + array[i]);
-            } else writer.write(array[i]);
+                for (int i = 0; i < array.length; i++)
+                    writer.write(inputName[i].getName() + System.lineSeparator() + array[i]);
+            } else for (String s : array) writer.write(s);
         }
-        writer.flush();
         return outputName;
     }
-
-
 }
